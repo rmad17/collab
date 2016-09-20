@@ -25,6 +25,4 @@ def ws_consumer(message):
     """
     message.reply_channel.send({
         'text': message.content.get('text'),
-        'uuid': message.content.get('uuid'),
-
     })
