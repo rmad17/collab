@@ -13,10 +13,18 @@ from django.http import HttpResponse
 from channels.handler import AsgiHandler
 
 
-def http_consumer(message):
+def ws_consumer(message):
+    """
+    # From Channels Docs
     # Make standard HTTP response - access ASGI path attribute directly
     response = HttpResponse("Hello world! You asked for %s" %
                             message.content.get('path'))
     # Encode that response into message format (ASGI)
     for chunk in AsgiHandler.encode_response(response):
         message.reply_channel.send(chunk)
+    """
+    message.reply_channel.send({
+        'text': message.content.get('text'),
+        'uuid': message.content.get('uuid'),
+
+    })

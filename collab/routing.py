@@ -12,6 +12,8 @@ Routing for channels
 
 # In routing.py
 from channels.routing import route
+
 channel_routing = [
-    route("http.request", "document.consumers.http_consumer"),
+    # route("http.request", "document.consumers.http_consumer"),
+    route("websocket.receive", "document.consumers.ws_consumer"),
 ]
