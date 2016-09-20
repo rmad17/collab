@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim:fenc=utf-8
 #
@@ -12,9 +11,12 @@ Routing for channels
 
 # In routing.py
 from channels.routing import route
+from document import consumers
 
 channel_routing = [
     # route("http.request", "document.consumers.http_consumer"),
-    route("websocket.receive", "document.consumers.ws_consumer",
-          path=r'^/doc/update/$'),
+    # route("websocket.receive", consumers.ws_consumer,
+    #      path=r'^/doc/update/$'),
+    route("websocket.connect", consumers.ws_connect),
+    route("websocket.receive", consumers.ws_receive),
 ]

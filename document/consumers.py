@@ -9,8 +9,14 @@
 """
 Consumer file for channels
 """
+import json
+import logging
 from django.http import HttpResponse
+from channels import Channel
 from channels.handler import AsgiHandler
+from channels.sessions import channel_session
+
+log = logging.getLogger(__name__)
 
 
 def ws_consumer(message):
@@ -25,4 +31,34 @@ def ws_consumer(message):
     """
     message.reply_channel.send({
         'text': message.content.get('text'),
+    })
+
+
+@channel_session
+def ws_connect(message):
+    message.reply_channel.send({
+        "text": json.dumps({
+            "action": "reply_channel",
+            "reply_channel": message.reply_channel.name,
+        })
+    })
+
+
+@channel_session
+def ws_receive(message):
+    try:
+        data = json.loads(message.get('text'))
+        print('d:', data)
+    except ValueError:
+        log.debug("ws message isn't json text=%s", message.get('text'))
+        return
+    if data:
+        reply_channel = message.reply_channel.name
+    print('reply_channel:', reply_channel)
+    # Tell client task has been started
+    Channel(reply_channel).send({
+        "text": json.dumps({
+            "action": "saved",
+            "text": "text0",
+        })
     })
